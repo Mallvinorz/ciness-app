@@ -1,4 +1,4 @@
-package com.example.cinessapp.presentation.home.components
+package com.example.cinessapp.ui.presentation.home.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -24,8 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
-import androidx.core.graphics.luminance
 import com.example.cinessapp.R
 import com.example.cinessapp.core.utils.AppIcons
 import com.example.cinessapp.ui.theme.CinessAppTheme

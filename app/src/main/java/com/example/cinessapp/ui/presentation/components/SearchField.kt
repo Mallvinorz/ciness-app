@@ -1,4 +1,4 @@
-package com.example.cinessapp.presentation.components
+package com.example.cinessapp.ui.presentation.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -45,7 +45,7 @@ fun SearchField(modifier: Modifier = Modifier) {
             )
         },
         expanded = expanded,
-        onExpandedChange = { expanded = it},
+        onExpandedChange = { expanded = it },
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp),
