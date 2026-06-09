@@ -33,7 +33,6 @@ fun TopMenu(
     modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier.padding(horizontal = 16.dp, vertical = 20.dp),
         color = MaterialTheme.colorScheme.background,
         shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp),
         shadowElevation = 4.dp
@@ -83,7 +82,7 @@ fun SearchField(modifier: Modifier = Modifier) {
         },
         leadingIcon = {
             Icon(
-                painter = painterResource(AppIcons.Search),
+                painter = painterResource(AppIcons.search),
                 contentDescription = "Search Icon",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = modifier.size(20.dp)
@@ -109,7 +108,7 @@ private fun SearchFieldPreview() {
 }
 
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 private fun TopMenuPreview() {
     CinessAppTheme() {

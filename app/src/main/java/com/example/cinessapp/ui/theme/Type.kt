@@ -26,12 +26,30 @@ val Typography = Typography(
         fontFamily = Inter, fontSize = 14.sp, fontWeight = FontWeight.Normal
     ),
 
+    headlineLarge = TextStyle(
+        fontFamily = Manrope,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.ExtraBold
+    ),
+
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = Inter,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
+    ),
+
+    bodySmall = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp
+    ),
+
+    labelLarge = TextStyle(
+        fontFamily = Manrope,
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp
     ),
 
     labelMedium = TextStyle(
