@@ -39,6 +39,11 @@ val Typography = Typography(
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     ),
+    bodyMedium = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 12.sp
+    ),
 
     bodySmall = TextStyle(
         fontFamily = Inter,

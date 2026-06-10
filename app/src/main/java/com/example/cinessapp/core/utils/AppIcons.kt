@@ -13,4 +13,6 @@ object AppIcons {
     val profile = R.drawable.ic_sax_profile
     val profileBold = R.drawable.ic_sax_profile_bold
     val playCircleBold = R.drawable.ic_sax_play_circle_bold
+
+    val magicStarBold = R.drawable.ic_sax_magic_star_bold
 }

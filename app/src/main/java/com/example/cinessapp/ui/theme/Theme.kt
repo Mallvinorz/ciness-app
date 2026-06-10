@@ -23,6 +23,7 @@ private val LightColorScheme = lightColorScheme(
     background = WhiteSmokeLight,
     onBackground = BatsCloakBlack,
     surface = WhiteHeaven,
+    onSurface = CenterStackGold,
     surfaceVariant = PurpleCrystal,
     onSurfaceVariant = CavernousGrey
 
