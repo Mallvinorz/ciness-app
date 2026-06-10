@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class MovieDto(
     val adult: Boolean,
-    @SerializedName("backdrop_path") val backdropPath: String,
+    @SerializedName("backdrop_path") val backdropPath: String?,
     @SerializedName("genre_ids") val genreIds: List<Int>,
     val id: Int,
     @SerializedName("original_language") val originalLanguage: String,

@@ -14,7 +14,7 @@ fun MovieListDto.toDomain(): MovieList = MovieList(
 
 fun MovieDto.toDomain(): Movie = Movie(
     adult = adult,
-    backdropPath = backdropPath,
+    backdropPath = backdropPath ?: "",
     genreIds = genreIds,
     id = id,
     oriLanguage = originalLanguage,

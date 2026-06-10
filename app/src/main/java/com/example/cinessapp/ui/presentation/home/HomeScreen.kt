@@ -20,6 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.cinessapp.core.state.UiState
+import com.example.cinessapp.domain.model.Genre
+import com.example.cinessapp.domain.model.Movie
+import com.example.cinessapp.domain.model.MovieList
 import com.example.cinessapp.ui.presentation.home.components.GenreFilterRow
 import com.example.cinessapp.ui.presentation.home.components.MovieGrid
 import com.example.cinessapp.ui.presentation.home.components.TopMenu
@@ -34,45 +37,64 @@ fun HomeScreen(
     val selectedGenre by viewModel.selectedGenre.collectAsStateWithLifecycle()
     val filteredMovies by viewModel.filteredMovies.collectAsStateWithLifecycle()
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        TopMenu()
+    HomeScreenContent(
+        genreState = genreState,
+        movieState = movieState,
+        selectedGenre = selectedGenre,
+        filteredMovies = filteredMovies,
+        onGenreSelected = viewModel::onGenreSelected,
+    )
+}
 
-        when (val state = genreState) {
+@Composable
+private fun HomeScreenContent(
+    genreState: UiState<List<Genre>>,
+    movieState: UiState<MovieList>,
+    selectedGenre: Genre?,
+    filteredMovies: List<Movie>,
+    onGenreSelected: (Genre) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.fillMaxSize()) {
+        TopMenu()
+        Spacer(modifier = modifier.size(8.dp))
+
+        when (genreState) {
             is UiState.Loading -> {
                 Box(
-                    modifier = Modifier
+                    modifier = modifier
                         .fillMaxWidth()
                         .height(48.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                    CircularProgressIndicator(modifier = modifier.size(24.dp))
                 }
             }
 
             is UiState.Error -> {
                 Text(
                     text = "Failed to load genres", color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = modifier.padding(16.dp)
                 )
             }
 
             is UiState.Success -> {
                 GenreFilterRow(
-                    genres = state.data,
+                    genres = genreState.data,
                     selectedGenre = selectedGenre,
-                    onGenreSelected = viewModel::onGenreSelected,
+                    onGenreSelected = onGenreSelected,
                 )
             }
 
             is UiState.Idle -> Unit
         }
-        Spacer(modifier = Modifier.size(8.dp))
+        Spacer(modifier = modifier.size(8.dp))
 
-        when (val state = movieState) {
+        when (movieState) {
             is UiState.Idle -> Unit
             is UiState.Loading -> {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) { CircularProgressIndicator(modifier = Modifier.size(24.dp)) }
             }
@@ -83,11 +105,11 @@ fun HomeScreen(
 
             is UiState.Error -> {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = state.message,
+                        text = movieState.message,
                         color = MaterialTheme.colorScheme.error
                     )
                 }
@@ -103,10 +125,58 @@ fun HomeScreen(
     }
 }
 
-@Preview
+
+@Preview(showBackground = true)
 @Composable
-private fun HomeScreenPreview() {
+private fun HomeScreenSuccessPreview() {
+    val fakeGenres = listOf(
+        Genre(28, "Action"),
+        Genre(12, "Adventure"),
+        Genre(35, "Comedy"),
+    )
+
+    val fakeMovies = listOf(
+        Movie(
+            adult = false,
+            backdropPath = "",
+            genreIds = listOf(0,1),
+            id = 1,
+            oriLanguage = "",
+            oriTitle = "Test Title",
+            overview = "",
+            popularity = 0.0,
+            posterPath = "",
+            releaseDate = "2020",
+            title = "Title",
+            video = false,
+            voteAverage = 4.6,
+            voteCount = 34
+        ),
+        Movie(
+            adult = false,
+            backdropPath = "",
+            genreIds = listOf(0,1),
+            id = 2,
+            oriLanguage = "",
+            oriTitle = "Test Title",
+            overview = "",
+            popularity = 0.0,
+            posterPath = "",
+            releaseDate = "2020",
+            title = "Title",
+            video = false,
+            voteAverage = 4.6,
+            voteCount = 34
+        ),
+    )
+
     CinessAppTheme() {
-        HomeScreen()
+        HomeScreenContent(
+            genreState = UiState.Success(fakeGenres),
+            movieState = UiState.Success(MovieList(1, fakeMovies,1, 2)),
+            selectedGenre = fakeGenres.first(),
+            filteredMovies = fakeMovies,
+            onGenreSelected = {}
+        )
     }
 }
