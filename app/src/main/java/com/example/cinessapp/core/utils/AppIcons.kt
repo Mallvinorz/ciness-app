@@ -15,4 +15,10 @@ object AppIcons {
     val playCircleBold = R.drawable.ic_sax_play_circle_bold
 
     val magicStarBold = R.drawable.ic_sax_magic_star_bold
+
+    val arrowLeft = R.drawable.ic_sax_arrow_left
+
+    val save = R.drawable.ic_sax_save
+
+    val saveBold = R.drawable.ic_sax_save_bold
 }
