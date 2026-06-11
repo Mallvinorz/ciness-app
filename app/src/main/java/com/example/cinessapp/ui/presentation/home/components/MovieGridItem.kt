@@ -25,9 +25,9 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.example.cinessapp.R
+import com.example.cinessapp.core.utils.AppConfig
 import com.example.cinessapp.core.utils.AppIcons
 import com.example.cinessapp.domain.model.Movie
-import com.example.cinessapp.domain.model.MovieItem
 import com.example.cinessapp.ui.theme.CinessAppTheme
 
 @Composable
@@ -37,14 +37,15 @@ fun MovieGridItem(item: Movie) {
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(160.dp)
+                .height(200.dp)
                 .clip(
                     RoundedCornerShape(12.dp)
                 )
         ) {
             AsyncImage(
                 modifier = Modifier.fillMaxSize(),
-                model = ImageRequest.Builder(LocalContext.current).data(item.posterPath).build(),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data("${AppConfig.IMAGE_BASE_URL}w185${item.posterPath}").build(),
                 contentDescription = item.title,
                 contentScale = ContentScale.Crop,
                 placeholder = painterResource(R.drawable.image_placeholder),

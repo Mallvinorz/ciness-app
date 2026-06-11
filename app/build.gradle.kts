@@ -38,6 +38,11 @@ android {
             "API_READ_ACCESS_TOKEN",
             "${localProperties["API_READ_ACCESS_TOKEN"] ?: ""}"
         )
+        buildConfigField(
+            "String",
+            "IMAGE_BASE_URL",
+            "${localProperties["IMAGE_BASE_URL"]}"
+        )
     }
 
     buildTypes {
