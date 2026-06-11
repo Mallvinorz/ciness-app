@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +28,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.example.cinessapp.R
@@ -42,7 +45,15 @@ import com.example.cinessapp.ui.presentation.detail.components.ReviewCardListIte
 import com.example.cinessapp.ui.theme.CinessAppTheme
 
 @Composable
-fun MovieDetailScreen(movie: Movie, castList: List<Cast>, reviewList: List<Review>) {
+fun MovieDetailScreen(
+    viewModel: MovieDetailViewModel = hiltViewModel(),
+    movie: Movie,
+    castList: List<Cast>,
+    reviewList: List<Review>
+) {
+    val movieDetailState by viewModel.movieDetailState.collectAsStateWithLifecycle()
+
+
     Surface(color = MaterialTheme.colorScheme.background) {
         Column(modifier = Modifier.fillMaxSize()) {
             Box(

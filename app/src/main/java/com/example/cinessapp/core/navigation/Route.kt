@@ -21,4 +21,10 @@ sealed interface Route {
 
     @Serializable
     data object Profile : Route
+
+    @Serializable
+    data object MovieDetail : Route
+
+    @Serializable
+    data object ReviewDetail : Route
 }

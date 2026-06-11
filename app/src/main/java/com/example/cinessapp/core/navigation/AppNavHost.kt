@@ -5,6 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.cinessapp.ui.presentation.detail.MovieDetailScreen
+import com.example.cinessapp.ui.presentation.detail.ReviewDetailScreen
 import com.example.cinessapp.ui.presentation.home.HomeScreen
 import com.example.cinessapp.ui.presentation.profile.ProfileScreen
 import com.example.cinessapp.ui.presentation.search.SearchScreen
@@ -28,6 +30,12 @@ fun AppNavHost(modifier: Modifier = Modifier, navController: NavHostController) 
         }
         composable<Route.Profile> {
             ProfileScreen()
+        }
+        composable<Route.MovieDetail> {
+            MovieDetailScreen()
+        }
+        composable<Route.ReviewDetail> {
+            ReviewDetailScreen()
         }
     }
 }
