@@ -15,7 +15,7 @@ data class CastDto(
     val name: String,
     @SerializedName("original_name") val originalName: String,
     val popularity: Double,
-    @SerializedName("profile_path") val profilePath: String,
+    @SerializedName("profile_path") val profilePath: String?,
     @SerializedName("cast_id") val castId: String,
     val character: String,
 )

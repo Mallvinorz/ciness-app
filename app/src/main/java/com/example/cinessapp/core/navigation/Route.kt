@@ -11,6 +11,9 @@ import kotlinx.serialization.Serializable
 
 sealed interface Route {
     @Serializable
+    data object Main : Route
+
+    @Serializable
     data object Home : Route
 
     @Serializable
@@ -23,7 +26,7 @@ sealed interface Route {
     data object Profile : Route
 
     @Serializable
-    data object MovieDetail : Route
+    data class MovieDetail(val movieId: Int) : Route
 
     @Serializable
     data object ReviewDetail : Route

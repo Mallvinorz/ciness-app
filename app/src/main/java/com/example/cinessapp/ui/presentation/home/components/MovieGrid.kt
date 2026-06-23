@@ -8,20 +8,22 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.cinessapp.core.navigation.Route
 import com.example.cinessapp.domain.model.Movie
-import com.example.cinessapp.domain.model.MovieItem
 import com.example.cinessapp.ui.theme.CinessAppTheme
 
 @Composable
-fun MovieGrid(movieGrid: List<Movie>) {
+fun MovieGrid(movieGrid: List<Movie>, onMovieClick: (Int) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(movieGrid, key = { it.id}) { movie ->
-            MovieGridItem(movie)
+        items(movieGrid, key = { it.id }) { movie ->
+            MovieGridItem(
+                item = movie,
+                onClick = { onMovieClick(movie.id)})
         }
     }
 }

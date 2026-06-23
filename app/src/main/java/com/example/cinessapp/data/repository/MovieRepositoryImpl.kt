@@ -5,9 +5,11 @@ import com.example.cinessapp.data.remote.api.ApiService
 import com.example.cinessapp.data.remote.api.NetworkResult
 import com.example.cinessapp.data.remote.api.mapSuccess
 import com.example.cinessapp.data.remote.api.safeApiCall
+import com.example.cinessapp.domain.model.Cast
 import com.example.cinessapp.domain.model.Genre
 import com.example.cinessapp.domain.model.MovieDetail
 import com.example.cinessapp.domain.model.MovieList
+import com.example.cinessapp.domain.model.Review
 import com.example.cinessapp.domain.repository.MovieRepository
 import javax.inject.Inject
 
@@ -26,7 +28,18 @@ class MovieRepositoryImpl @Inject constructor(
         apiService.getMovieNowPlaying()
     }.mapSuccess { it.toDomain() }
 
-    override suspend fun getDetailMovie(movieId: Int): NetworkResult<MovieDetail> = safeApiCall {
-        apiService.getMovieById(movieId)
-    }.mapSuccess { it.toDomain() }
+    override suspend fun getDetailMovieById(movieId: Int): NetworkResult<MovieDetail> =
+        safeApiCall {
+            apiService.getMovieById(movieId)
+        }.mapSuccess { it.toDomain() }
+
+    override suspend fun getMovieCreditsById(movieId: Int): NetworkResult<List<Cast>> =
+        safeApiCall {
+            apiService.getMovieCreditsById(movieId)
+        }.mapSuccess { it.toDomain() }
+
+    override suspend fun getMovieReviewsById(movieId: Int): NetworkResult<List<Review>> =
+        safeApiCall {
+            apiService.getMovieReviewsById(movieId)
+        }.mapSuccess { it.toDomain() }
 }

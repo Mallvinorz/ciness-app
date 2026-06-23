@@ -1,5 +1,6 @@
 package com.example.cinessapp.ui.presentation.home.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,8 +32,8 @@ import com.example.cinessapp.domain.model.Movie
 import com.example.cinessapp.ui.theme.CinessAppTheme
 
 @Composable
-fun MovieGridItem(item: Movie) {
-    Column() {
+fun MovieGridItem(item: Movie, onClick: () -> Unit) {
+    Column(modifier = Modifier.clickable(onClick = onClick)) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier

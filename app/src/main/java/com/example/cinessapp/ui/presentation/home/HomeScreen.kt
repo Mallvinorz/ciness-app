@@ -30,7 +30,8 @@ import com.example.cinessapp.ui.theme.CinessAppTheme
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    onMovieClick: (Int) -> Unit
 ) {
     val genreState by viewModel.genreState.collectAsStateWithLifecycle()
     val movieState by viewModel.movieState.collectAsStateWithLifecycle()
@@ -43,6 +44,7 @@ fun HomeScreen(
         selectedGenre = selectedGenre,
         filteredMovies = filteredMovies,
         onGenreSelected = viewModel::onGenreSelected,
+        onMovieClick = onMovieClick
     )
 }
 
@@ -53,6 +55,7 @@ private fun HomeScreenContent(
     selectedGenre: Genre?,
     filteredMovies: List<Movie>,
     onGenreSelected: (Genre) -> Unit,
+    onMovieClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxSize()) {
@@ -100,7 +103,7 @@ private fun HomeScreenContent(
             }
 
             is UiState.Success -> {
-                MovieGrid(movieGrid = filteredMovies)
+                MovieGrid(movieGrid = filteredMovies, onMovieClick = onMovieClick)
             }
 
             is UiState.Error -> {
@@ -139,7 +142,7 @@ private fun HomeScreenSuccessPreview() {
         Movie(
             adult = false,
             backdropPath = "",
-            genreIds = listOf(0,1),
+            genreIds = listOf(0, 1),
             id = 1,
             oriLanguage = "",
             oriTitle = "Test Title",
@@ -155,7 +158,7 @@ private fun HomeScreenSuccessPreview() {
         Movie(
             adult = false,
             backdropPath = "",
-            genreIds = listOf(0,1),
+            genreIds = listOf(0, 1),
             id = 2,
             oriLanguage = "",
             oriTitle = "Test Title",
@@ -173,10 +176,11 @@ private fun HomeScreenSuccessPreview() {
     CinessAppTheme() {
         HomeScreenContent(
             genreState = UiState.Success(fakeGenres),
-            movieState = UiState.Success(MovieList(1, fakeMovies,1, 2)),
+            movieState = UiState.Success(MovieList(1, fakeMovies, 1, 2)),
             selectedGenre = fakeGenres.first(),
             filteredMovies = fakeMovies,
-            onGenreSelected = {}
+            onGenreSelected = {},
+            onMovieClick = {}
         )
     }
 }
