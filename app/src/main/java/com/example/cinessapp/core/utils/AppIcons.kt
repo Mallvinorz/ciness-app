@@ -21,4 +21,8 @@ object AppIcons {
     val save = R.drawable.ic_sax_save
 
     val saveBold = R.drawable.ic_sax_save_bold
+
+    val heart = R.drawable.ic_sax_heart
+
+    val hearBold = R.drawable.ic_sax_heart_bold
 }

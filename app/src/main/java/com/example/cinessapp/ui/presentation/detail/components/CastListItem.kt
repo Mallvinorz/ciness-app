@@ -33,7 +33,7 @@ fun CastListItem(cast: Cast) {
                 .clip(CircleShape)
                 .size(56.dp),
             model = ImageRequest.Builder(LocalContext.current)
-                .data(AppConfig.BASE_URL + cast.profilePath).build(),
+                .data("${AppConfig.IMAGE_BASE_URL}w185${cast.profilePath}").build(),
             contentDescription = cast.name,
             contentScale = ContentScale.Crop,
             placeholder = painterResource(R.drawable.image_placeholder),

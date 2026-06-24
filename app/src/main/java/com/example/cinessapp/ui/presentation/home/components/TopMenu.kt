@@ -58,7 +58,7 @@ fun TopMenu(
                         style = MaterialTheme.typography.displayLarge
                     )
                     Text(
-                        "What do you want yo watch today?",
+                        "What do you want to watch today?",
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.displaySmall
                     )

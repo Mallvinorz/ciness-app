@@ -25,7 +25,8 @@ private val LightColorScheme = lightColorScheme(
     surface = WhiteHeaven,
     onSurface = CenterStackGold,
     surfaceVariant = PurpleCrystal,
-    onSurfaceVariant = CavernousGrey
+    onSurfaceVariant = CavernousGrey,
+    inverseSurface = UnicornSilverBorder
 
     /* Other default colors to override
     surface = Color(0xFFFFFBFE),

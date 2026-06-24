@@ -1,5 +1,6 @@
 package com.example.cinessapp.ui.presentation.detail
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,20 +8,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,7 +37,10 @@ import com.example.cinessapp.R
 import com.example.cinessapp.core.state.UiState
 import com.example.cinessapp.core.utils.AppConfig
 import com.example.cinessapp.core.utils.AppIcons
+import com.example.cinessapp.core.utils.toRuntime
+import com.example.cinessapp.domain.model.Author
 import com.example.cinessapp.domain.model.Cast
+import com.example.cinessapp.domain.model.Genre
 import com.example.cinessapp.domain.model.MovieDetail
 import com.example.cinessapp.domain.model.Review
 import com.example.cinessapp.ui.presentation.detail.components.CastList
@@ -57,46 +57,41 @@ fun MovieDetailScreen(
     val castsState by viewModel.castsListState.collectAsStateWithLifecycle()
     val reviewState by viewModel.reviewListState.collectAsStateWithLifecycle()
 
-    Surface(color = MaterialTheme.colorScheme.background) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            when (val state = movieDetailState) {
-                is UiState.Loading -> {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(modifier = Modifier.size(24.dp))
-                    }
+    Box(modifier = Modifier.fillMaxSize()) {
+        when (val state = movieDetailState) {
+            is UiState.Loading -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
                 }
-
-                is UiState.Error -> {
-                    Text(
-                        text = "Failed to load detail movie",
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
-
-                is UiState.Success -> {
-                    MovieDetailContent(
-                        movieDetail = state.data,
-                        castsState = castsState,
-                        reviewState = reviewState
-                    )
-                }
-
-                is UiState.Idle -> Unit
             }
-            Row(
-                modifier = Modifier.padding(
-                    start = 16.dp,
-                    top = WindowInsets.safeContent.asPaddingValues().calculateTopPadding()
-                )
-            ) {
-                Icon(
-                    painterResource(AppIcons.arrowLeft),
-                    contentDescription = "Arrow left icon",
-                    tint = MaterialTheme.colorScheme.surface,
-                    modifier = Modifier
-                        .clickable(onClick = onBack)
+
+            is UiState.Error -> {
+                Text(
+                    text = "Failed to load detail movie",
+                    color = MaterialTheme.colorScheme.error
                 )
             }
+
+            is UiState.Success -> {
+                MovieDetailContent(
+                    movieDetail = state.data,
+                    castsState = castsState,
+                    reviewState = reviewState
+                )
+            }
+
+            is UiState.Idle -> Unit
+        }
+        Row(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Icon(
+                painterResource(AppIcons.arrowLeft),
+                contentDescription = "Arrow left icon",
+                tint = MaterialTheme.colorScheme.surface,
+                modifier = Modifier
+                    .clickable(onClick = onBack)
+            )
         }
     }
 }
@@ -107,7 +102,7 @@ fun MovieDetailContent(
     castsState: UiState<List<Cast>>,
     reviewState: UiState<List<Review>>
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column() {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -124,26 +119,30 @@ fun MovieDetailContent(
                     placeholder = painterResource(R.drawable.image_placeholder),
                     error = painterResource(R.drawable.image_placeholder)
                 )
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.5f))
-                ) {
-                    Icon(
-                        painter = painterResource(AppIcons.playCircleBold),
-                        contentDescription = "Play circle icon",
-                        modifier = Modifier.size(48.dp),
-                        tint = MaterialTheme.colorScheme.surfaceVariant
-                    )
+                Log.d("Movie Detail Screen", "GET BACKDROP PATH: ${movieDetail.backdropPath}")
+                if (movieDetail.backdropPath != null) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.2f))
+                    ) {
+                        Icon(
+                            painter = painterResource(AppIcons.playCircleBold),
+                            contentDescription = "Play circle icon",
+                            modifier = Modifier.size(48.dp),
+                            tint = MaterialTheme.colorScheme.surfaceVariant
+                        )
+                    }
                 }
             }
         }
         DetailHeader(
             title = movieDetail.title,
             year = movieDetail.releaseDate,
-            playTime = "play time",
-            rating = movieDetail.voteAverage.toString()
+            playTime = movieDetail.runtime.toRuntime(),
+            rating = movieDetail.voteAverage.toString(),
+            genres = movieDetail.genres
         )
         Column(
             modifier = Modifier
@@ -244,79 +243,66 @@ fun MovieDetailContent(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-private fun MovieDetailScreenPreview() {
+private fun MovieDetailScreenSuccessPreview() {
     CinessAppTheme() {
-//        MovieDetailScreen(
-//            movie = Movie(
-//                adult = false,
-//                backdropPath = "",
-//                genreIds = listOf(0),
-//                id = 1,
-//                oriLanguage = "",
-//                oriTitle = "",
-//                overview = "This is overview section",
-//                popularity = 3.5,
-//                posterPath = "",
-//                releaseDate = "2025",
-//                title = "Title",
-//                video = false,
-//                voteAverage = 6.8,
-//                voteCount = 123
-//            ),
-//            reviewList = listOf(
-//                Review(
-//                    author = "Kamal",
-//                    authorDetails = Author(
-//                        name = "Timal",
-//                        userName = "Kamal",
-//                        avatarPath = "",
-//                        rating = 0,
-//                    ),
-//                    content = "This movie is awesome",
-//                    createdAt = "",
-//                    id = "",
-//                    updatedAt = "",
-//                    url = ""
-//                ),
-//                Review(
-//                    author = "Kamal",
-//                    authorDetails = Author(
-//                        name = "Timal",
-//                        userName = "Kamal",
-//                        avatarPath = "",
-//                        rating = 0,
-//                    ),
-//                    content = "This movie is awesome",
-//                    createdAt = "",
-//                    id = "",
-//                    updatedAt = "",
-//                    url = ""
-//                ),
-//            ),
-//            castList = listOf(
-//                Cast(
-//                    profilePath = "",
-//                    name = "Brad Pitt",
-//                    characterName = "Broadway"
-//                ),
-//                Cast(
-//                    profilePath = "",
-//                    name = "Brad Pitt",
-//                    characterName = "Broadway"
-//                ),
-//                Cast(
-//                    profilePath = "",
-//                    name = "Brad Pitt",
-//                    characterName = "Broadway"
-//                ),
-//                Cast(
-//                    profilePath = "",
-//                    name = "Brad Pitt",
-//                    characterName = "Broadway"
-//                ),
-//            )
-//        )
+        MovieDetailContent(
+            movieDetail = MovieDetail(
+                adult = false,
+                backdropPath = "",
+                budget = 12000,
+                genres = listOf(
+                    Genre(
+                        id = 1,
+                        name = "Thriller"
+                    )
+                ),
+                homepage = "",
+                id = 1,
+                imdbId = "",
+                oriLanguage = "en",
+                oriTitle = "Original Title",
+                overview = "This is part of overview",
+                popularity = 83.5,
+                posterPath = "",
+                releaseDate = "2026-2-26",
+                revenue = 5000,
+                runtime = 123,
+                status = "",
+                tagline = "",
+                title = "Title",
+                video = false,
+                voteAverage = 44.4,
+                voteCount = 123
+            ),
+            castsState = UiState.Success(
+                listOf(
+                    Cast(
+                        profilePath = "",
+                        name = "Test Name Cast",
+                        characterName = "Test Name Char"
+                    )
+                )
+            ),
+            reviewState = UiState.Success(
+                listOf(
+                    Review(
+                        author = "Curl",
+                        authorDetails = Author(
+                            name = "Curl",
+                            userName = "Curl123",
+                            avatarPath = "",
+                            rating = null
+                        ),
+                        content = "This is the detail about review",
+                        createdAt = "2025-12-13",
+                        id = "",
+                        updatedAt = "2025-12-13",
+                        url = ""
+                    )
+                )
+            )
+        )
     }
 }
