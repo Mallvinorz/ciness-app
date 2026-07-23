@@ -8,6 +8,7 @@ import com.example.cinessapp.data.remote.api.NetworkResult
 import com.example.cinessapp.domain.model.Cast
 import com.example.cinessapp.domain.model.MovieDetail
 import com.example.cinessapp.domain.model.Review
+import com.example.cinessapp.domain.model.VideoTrailer
 import com.example.cinessapp.domain.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +24,10 @@ class MovieDetailViewModel @Inject constructor(
     private val _movieDetailState = MutableStateFlow<UiState<MovieDetail>>(UiState.Idle)
     val movieDetailState: StateFlow<UiState<MovieDetail>> = _movieDetailState.asStateFlow()
 
+    private val _movieTrailerState = MutableStateFlow<UiState<VideoTrailer>>(UiState.Idle)
+
+    val movieTrailerState: StateFlow<UiState<VideoTrailer>> = _movieTrailerState.asStateFlow()
+
     private val _castsListState = MutableStateFlow<UiState<List<Cast>>>(UiState.Idle)
     val castsListState: StateFlow<UiState<List<Cast>>> = _castsListState.asStateFlow()
 
@@ -32,9 +37,28 @@ class MovieDetailViewModel @Inject constructor(
     private val movieId: Int = checkNotNull(savedStateHandle["movieId"])
 
     init {
+        getMovieTrailerById(movieId)
         getMovieDetailById(movieId)
         getMovieCastsById(movieId)
         getMovieReviewsById(movieId)
+    }
+
+    fun getMovieTrailerById(movieId: Int) {
+        viewModelScope.launch {
+            _movieTrailerState.value = UiState.Loading
+
+            when (val result = repository.getDetailMovideVideosById(movieId)) {
+                is NetworkResult.Success -> {
+                    _movieTrailerState.value = UiState.Success(result.data)
+                }
+
+                is NetworkResult.HttpError -> _movieTrailerState.value =
+                    UiState.Error("HTTP ERROR ${result.code}: ${result.message}")
+
+                is NetworkResult.Exception -> _movieTrailerState.value =
+                    UiState.Error(result.e.message ?: "Unknown error")
+            }
+        }
     }
 
     fun getMovieDetailById(movieId: Int) {

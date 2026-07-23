@@ -1,7 +1,5 @@
 package com.example.cinessapp.ui.presentation.detail
 
-import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,29 +21,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
-import com.example.cinessapp.R
 import com.example.cinessapp.core.state.UiState
-import com.example.cinessapp.core.utils.AppConfig
 import com.example.cinessapp.core.utils.AppIcons
 import com.example.cinessapp.core.utils.toRuntime
-import com.example.cinessapp.domain.model.Author
 import com.example.cinessapp.domain.model.Cast
-import com.example.cinessapp.domain.model.Genre
 import com.example.cinessapp.domain.model.MovieDetail
 import com.example.cinessapp.domain.model.Review
+import com.example.cinessapp.domain.model.VideoTrailer
 import com.example.cinessapp.ui.presentation.detail.components.CastList
 import com.example.cinessapp.ui.presentation.detail.components.DetailHeader
 import com.example.cinessapp.ui.presentation.detail.components.ReviewCardListItem
+import com.example.cinessapp.ui.presentation.detail.components.YoutubeTrailerPlayer
 import com.example.cinessapp.ui.theme.CinessAppTheme
 
 @Composable
@@ -53,6 +44,7 @@ fun MovieDetailScreen(
     viewModel: MovieDetailViewModel = hiltViewModel(),
     onBack: () -> Unit
 ) {
+    val movieTrailerState by viewModel.movieTrailerState.collectAsStateWithLifecycle()
     val movieDetailState by viewModel.movieDetailState.collectAsStateWithLifecycle()
     val castsState by viewModel.castsListState.collectAsStateWithLifecycle()
     val reviewState by viewModel.reviewListState.collectAsStateWithLifecycle()
@@ -76,7 +68,8 @@ fun MovieDetailScreen(
                 MovieDetailContent(
                     movieDetail = state.data,
                     castsState = castsState,
-                    reviewState = reviewState
+                    reviewState = reviewState,
+                    movieTrailer = movieTrailerState,
                 )
             }
 
@@ -99,6 +92,7 @@ fun MovieDetailScreen(
 @Composable
 fun MovieDetailContent(
     movieDetail: MovieDetail,
+    movieTrailer: UiState<VideoTrailer>,
     castsState: UiState<List<Cast>>,
     reviewState: UiState<List<Review>>
 ) {
@@ -106,35 +100,27 @@ fun MovieDetailContent(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(240.dp)
         ) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                AsyncImage(
-                    modifier = Modifier.fillMaxSize(),
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data("${AppConfig.IMAGE_BASE_URL}w500${movieDetail.backdropPath}")
-                        .build(),
-                    contentDescription = movieDetail.title,
-                    contentScale = ContentScale.Crop,
-                    placeholder = painterResource(R.drawable.image_placeholder),
-                    error = painterResource(R.drawable.image_placeholder)
-                )
-                Log.d("Movie Detail Screen", "GET BACKDROP PATH: ${movieDetail.backdropPath}")
-                if (movieDetail.backdropPath != null) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Black.copy(alpha = 0.2f))
-                    ) {
-                        Icon(
-                            painter = painterResource(AppIcons.playCircleBold),
-                            contentDescription = "Play circle icon",
-                            modifier = Modifier.size(48.dp),
-                            tint = MaterialTheme.colorScheme.surfaceVariant
-                        )
+            when (movieTrailer) {
+                is UiState.Loading -> {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        CircularProgressIndicator(modifier = Modifier.size(24.dp))
                     }
                 }
+
+                is UiState.Success -> {
+                    YoutubeTrailerPlayer(youtubeVideoKey = movieTrailer.data.key)
+                }
+
+                is UiState.Error -> {
+                    Text(
+                        text = "Failed to load YouTube movie trailer",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+
+                is UiState.Idle -> Unit
             }
         }
         DetailHeader(
@@ -247,62 +233,62 @@ fun MovieDetailContent(
 @Composable
 private fun MovieDetailScreenSuccessPreview() {
     CinessAppTheme() {
-        MovieDetailContent(
-            movieDetail = MovieDetail(
-                adult = false,
-                backdropPath = "",
-                budget = 12000,
-                genres = listOf(
-                    Genre(
-                        id = 1,
-                        name = "Thriller"
-                    )
-                ),
-                homepage = "",
-                id = 1,
-                imdbId = "",
-                oriLanguage = "en",
-                oriTitle = "Original Title",
-                overview = "This is part of overview",
-                popularity = 83.5,
-                posterPath = "",
-                releaseDate = "2026-2-26",
-                revenue = 5000,
-                runtime = 123,
-                status = "",
-                tagline = "",
-                title = "Title",
-                video = false,
-                voteAverage = 44.4,
-                voteCount = 123
-            ),
-            castsState = UiState.Success(
-                listOf(
-                    Cast(
-                        profilePath = "",
-                        name = "Test Name Cast",
-                        characterName = "Test Name Char"
-                    )
-                )
-            ),
-            reviewState = UiState.Success(
-                listOf(
-                    Review(
-                        author = "Curl",
-                        authorDetails = Author(
-                            name = "Curl",
-                            userName = "Curl123",
-                            avatarPath = "",
-                            rating = null
-                        ),
-                        content = "This is the detail about review",
-                        createdAt = "2025-12-13",
-                        id = "",
-                        updatedAt = "2025-12-13",
-                        url = ""
-                    )
-                )
-            )
-        )
+//        MovieDetailContent(
+//            movieDetail = MovieDetail(
+//                adult = false,
+//                backdropPath = "",
+//                budget = 12000,
+//                genres = listOf(
+//                    Genre(
+//                        id = 1,
+//                        name = "Thriller"
+//                    )
+//                ),
+//                homepage = "",
+//                id = 1,
+//                imdbId = "",
+//                oriLanguage = "en",
+//                oriTitle = "Original Title",
+//                overview = "This is part of overview",
+//                popularity = 83.5,
+//                posterPath = "",
+//                releaseDate = "2026-2-26",
+//                revenue = 5000,
+//                runtime = 123,
+//                status = "",
+//                tagline = "",
+//                title = "Title",
+//                video = false,
+//                voteAverage = 44.4,
+//                voteCount = 123
+//            ),
+//            castsState = UiState.Success(
+//                listOf(
+//                    Cast(
+//                        profilePath = "",
+//                        name = "Test Name Cast",
+//                        characterName = "Test Name Char"
+//                    )
+//                )
+//            ),
+//            reviewState = UiState.Success(
+//                listOf(
+//                    Review(
+//                        author = "Curl",
+//                        authorDetails = Author(
+//                            name = "Curl",
+//                            userName = "Curl123",
+//                            avatarPath = "",
+//                            rating = null
+//                        ),
+//                        content = "This is the detail about review",
+//                        createdAt = "2025-12-13",
+//                        id = "",
+//                        updatedAt = "2025-12-13",
+//                        url = ""
+//                    )
+//                )
+//            )
+//        )
     }
 }

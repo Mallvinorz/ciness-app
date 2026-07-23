@@ -5,6 +5,7 @@ import com.example.cinessapp.data.remote.dto.GenreListDto
 import com.example.cinessapp.data.remote.dto.MovieDetailDto
 import com.example.cinessapp.data.remote.dto.MovieListDto
 import com.example.cinessapp.data.remote.dto.ReviewDto
+import com.example.cinessapp.data.remote.dto.VideoTrailerDto
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -28,4 +29,7 @@ interface ApiService {
 
     @GET("movie/{movieId}/reviews")
     suspend fun getMovieReviewsById(@Path("movieId") movieId: Int): Response<ReviewDto>
+
+    @GET("movie/{movieId}/videos")
+    suspend fun getDetailMovieVideos(@Path("movieId") movieId: Int): Response<VideoTrailerDto>
 }

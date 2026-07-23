@@ -6,6 +6,7 @@ import com.example.cinessapp.domain.model.Genre
 import com.example.cinessapp.domain.model.MovieDetail
 import com.example.cinessapp.domain.model.MovieList
 import com.example.cinessapp.domain.model.Review
+import com.example.cinessapp.domain.model.VideoTrailer
 
 interface MovieRepository {
 
@@ -19,4 +20,6 @@ interface MovieRepository {
     suspend fun getMovieCreditsById(movieId: Int): NetworkResult<List<Cast>>
 
     suspend fun getMovieReviewsById(movieId: Int): NetworkResult<List<Review>>
+
+    suspend fun getDetailMovideVideosById(movieId: Int): NetworkResult<VideoTrailer>
 }
